@@ -1,0 +1,6 @@
+Please install all module below before run pygame
+
+##Requried##
+pip install pygame  ## Game handle module
+pip install python-firebase ## Python  3.6 or lower only , Database handle
+pip install plotly  ## Graph handle
