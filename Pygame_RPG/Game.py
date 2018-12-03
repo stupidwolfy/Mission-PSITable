@@ -1,10 +1,8 @@
-""" Enermy AI test01 """
-
 """ Main process of game. """
 ##import charector
 ##import inventory
 ##import hud
-import pygame,random,math
+import pygame,random,math,time
 from pygame.locals import *
 
 ## Import sprite zone
@@ -34,20 +32,25 @@ Img_Height_ground_door_closed = pygame.image.load("world/Height_ground_1/door_cl
 Img_Flower_1 = pygame.image.load("world/Flower/1.png")
 Img_Flower_2 = pygame.image.load("world/Flower/2.png")
 Img_Flower_3 = pygame.image.load("world/Flower/3.png")
+Img_Player_up_idle = pygame.image.load("charector/player/up_idle.png")
 Img_Player_up1 = pygame.image.load("charector/player/up1.png")
 Img_Player_up2 = pygame.image.load("charector/player/up2.png")
+Img_Player_down_idle = pygame.image.load("charector/player/down_idle.png")
 Img_Player_down1 = pygame.image.load("charector/player/down1.png")
 Img_Player_down2 = pygame.image.load("charector/player/down2.png")
+Img_Player_left_idle = pygame.image.load("charector/player/left_idle.png")
 Img_Player_left1 = pygame.image.load("charector/player/left1.png")
 Img_Player_left2 = pygame.image.load("charector/player/left2.png")
+Img_Player_right_idle = pygame.image.load("charector/player/right_idle.png")
 Img_Player_right1 = pygame.image.load("charector/player/right1.png")
 Img_Player_right2 = pygame.image.load("charector/player/right2.png")
 ##
-## Setup zon
+## Setup zone
 display_width = 1600
 display_height = 900
 current_scence = "jungle_1"
 scence_item_size = 32
+clock = pygame.time.Clock()
 ##
 ## Processing zone
 
@@ -86,38 +89,46 @@ def move(x, y):
 def event_control():
     x = (display_width * 0.5)
     y = (display_height * 0.5)
+    Img_Player = Img_Player_down2
+    Idle_Player = Img_Player_down_idle
+    speed = 5
     x_acc = 0
     y_acc = 0
-    Img_Player = Img_Player_down2
     while True:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                   pygame.quit()
-                   quit()
+                    pygame.quit()
+                    quit()
                 if event.key == K_UP:
-                    y_acc = -3
+                    y_acc = -speed
                     Img_Player = Img_Player_up2
+                    Idle_Player = Img_Player_up_idle
                 if event.key == K_DOWN:
-                    y_acc = 3
+                    y_acc = speed
                     Img_Player = Img_Player_down2
+                    Idle_Player = Img_Player_down_idle
                 if event.key == K_LEFT:
-                    x_acc = -3
+                    x_acc = -speed
                     Img_Player = Img_Player_left2
+                    Idle_Player = Img_Player_left_idle
                 if event.key == K_RIGHT:
-                    x_acc = 3
+                    x_acc = speed
                     Img_Player = Img_Player_right2
+                    Idle_Player = Img_Player_right_idle
 
             if event.type == KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        x_acc = 0
+                    x_acc = 0
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     y_acc = 0
-        x +=  x_acc
-        y +=  y_acc
+                Img_Player = Idle_Player
+        x += x_acc
+        y += y_acc
         draw_scence(current_scence)
         screen.blit(Img_Player, (x, y))
         pygame.display.update()
+        clock.tick(60)
 
 def game_loop():
     draw_scence(current_scence)
