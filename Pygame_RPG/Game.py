@@ -1,3 +1,5 @@
+""" Enermy AI test01 """
+
 """ Main process of game. """
 ##import charector
 ##import inventory
@@ -32,28 +34,24 @@ Img_Height_ground_door_closed = pygame.image.load("world/Height_ground_1/door_cl
 Img_Flower_1 = pygame.image.load("world/Flower/1.png")
 Img_Flower_2 = pygame.image.load("world/Flower/2.png")
 Img_Flower_3 = pygame.image.load("world/Flower/3.png")
-Img_Player_down1 = pygame.image.load("charector/player/down1.png")
-Img_Player_down2 = pygame.image.load("charector/player/down2.png")
 Img_Player_up1 = pygame.image.load("charector/player/up1.png")
 Img_Player_up2 = pygame.image.load("charector/player/up2.png")
+Img_Player_down1 = pygame.image.load("charector/player/down1.png")
+Img_Player_down2 = pygame.image.load("charector/player/down2.png")
 Img_Player_left1 = pygame.image.load("charector/player/left1.png")
 Img_Player_left2 = pygame.image.load("charector/player/left2.png")
 Img_Player_right1 = pygame.image.load("charector/player/right1.png")
-Img_Player_right = pygame.image.load("charector/player/right2.png")
-
-
-
-
+Img_Player_right2 = pygame.image.load("charector/player/right2.png")
 ##
 ## Setup zon
-display_width = 800
-display_height = 600
+display_width = 1600
+display_height = 900
 current_scence = "jungle_1"
 scence_item_size = 32
 ##
 ## Processing zone
 
-screen = pygame.display.set_mode((display_width, display_height))
+screen = pygame.display.set_mode((display_width, display_height), pygame.FULLSCREEN)
 
 def draw_title():
     screen.fill(Color("Grey"))
@@ -83,15 +81,14 @@ def draw_scence(scence):
     screen.blit(Img_Height_ground_08, (scence_item_size*7, 700))
 
 def move(x, y):
-    screen.blit(Img_Player_down1, (x, y))
+    screen.blit(Img_Player, (x, y))
 
 def event_control():
     x = (display_width * 0.5)
     y = (display_height * 0.5)
     x_acc = 0
     y_acc = 0
-    p_speed = 1
-
+    Img_Player = Img_Player_down2
     while True:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
@@ -99,13 +96,17 @@ def event_control():
                    pygame.quit()
                    quit()
                 if event.key == K_UP:
-                    y_acc = -p_speed
+                    y_acc = -3
+                    Img_Player = Img_Player_up2
                 if event.key == K_DOWN:
-                    y_acc = p_speed
+                    y_acc = 3
+                    Img_Player = Img_Player_down2
                 if event.key == K_LEFT:
-                    x_acc = -p_speed
+                    x_acc = -3
+                    Img_Player = Img_Player_left2
                 if event.key == K_RIGHT:
-                    x_acc = p_speed
+                    x_acc = 3
+                    Img_Player = Img_Player_right2
 
             if event.type == KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -115,7 +116,7 @@ def event_control():
         x +=  x_acc
         y +=  y_acc
         draw_scence(current_scence)
-        move(x, y)
+        screen.blit(Img_Player, (x, y))
         pygame.display.update()
 
 def game_loop():
