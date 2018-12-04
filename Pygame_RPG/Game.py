@@ -96,6 +96,7 @@ def draw_scence(scence):
 def event_control():
     player_pos = [int(display_width * 0.5), int(display_height * 0.5)]
     bullet_pos = [0, 0]
+    bullet = list() #bullet dict [[x,y,direction],[x,y,direction],[x,y,direction],....]
     Img_Player = Img_Player_right_idle
     Idle_Player = Img_Player_down_idle
     player_speed = 5
@@ -105,12 +106,13 @@ def event_control():
     direction = 'right'
     bul_dicrec = 'up'
     bang = True
-## main process loop
+
     while True:
         draw_scence(current_scence)
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
+                    print(len(bullet))
                     pygame.quit()
                     quit()
                 if event.key == K_UP:
@@ -135,7 +137,7 @@ def event_control():
                     direction = 'right'
                 if event.key == K_SPACE:
                     bullet_pos = deepcopy(player_pos)
-                    pygame.draw.circle(screen, (255, 50, 50),bullet_pos, 5,)
+                    bullet.append([bullet_pos[0], bullet_pos[1],direction])
                     bang = True
             if event.type == KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -143,27 +145,30 @@ def event_control():
                 if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                     y_acc = 0
                 Img_Player = Idle_Player
-        if (direction == 'up' and bang) or bul_dicrec == 'up':
-            bullet_pos[1] -= bul_speed
-            pygame.draw.circle(screen, (255, 50, 50),bullet_pos, 5,)
-            bul_dicrec = 'up'
-        if (direction == 'down' and bang) or bul_dicrec == 'down':
-            bullet_pos[1] += bul_speed
-            pygame.draw.circle(screen, (255, 50, 50),bullet_pos, 5,)
-            bul_dicrec = 'down'
-        if (direction == 'left' and bang) or bul_dicrec == 'left':
-            bullet_pos[0] -= bul_speed
-            pygame.draw.circle(screen, (255, 50, 50),bullet_pos, 5,)
-            bul_dicrec = 'left'
-        if (direction == 'right' and bang) or bul_dicrec == 'right':
-            bullet_pos[0] += bul_speed
-            pygame.draw.circle(screen, (255, 50, 50),bullet_pos, 5,)
-            bul_dicrec = 'right'
-        bang = False
-
+                
+    ## remove bullet when it offscreen
+        for i in range(len(bullet)-1 , -1, -1):
+                if bullet[i][0] < 0 or bullet[i][0] > display_width or bullet[i][1] < 0 or bullet[i][1] > display_height:
+                    del bullet[i]
+    ## bullet handle
+        for i in bullet:
+            if i[2] == 'up':
+                i[1] -= bul_speed
+                pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
+            elif i[2] == 'down':
+                i[1] += bul_speed
+                pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
+            elif i[2] == 'left':
+                i[0] -= bul_speed
+                pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
+            elif i[2] == 'right' :
+                i[0] += bul_speed
+                pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
+##
         player_pos[0] += x_acc
         player_pos[1] += y_acc
-        screen.blit(Img_Player,  player_pos) # cook item
+        
+        screen.blit(Img_Player,  player_pos) # cook player 
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
 
