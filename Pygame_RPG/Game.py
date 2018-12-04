@@ -45,13 +45,13 @@ Img_Player_left2 = pygame.image.load("charector/player/left2.png")
 Img_Player_right_idle = pygame.image.load("charector/player/right_idle.png")
 Img_Player_right1 = pygame.image.load("charector/player/right1.png")
 Img_Player_right2 = pygame.image.load("charector/player/right2.png")
-Img_Enemy_up1 = pygame.image.load("charector/enemy/up1.png")
-Img_Enemyr_down1 = pygame.image.load("charector/enemy/down1.png")
-Img_Enemy_down2 = pygame.image.load("charector/enemy/down2.png")
-Img_Enemy_left1 = pygame.image.load("charector/enemy/left1.png")
-Img_Enemy_left2 = pygame.image.load("charector/enemy/left2.png")
-Img_Enemy_right1 = pygame.image.load("charector/enemy/right1.png")
-Img_Enemy_right2 = pygame.image.load("charector/enemy/right2.png")
+Img_Eneme_up1 = pygame.image.load("charector/enemy/up1.png")
+Img_Eneme_down1 = pygame.image.load("charector/enemy/down1.png")
+Img_Eneme_down2 = pygame.image.load("charector/enemy/down2.png")
+Img_Eneme_left1 = pygame.image.load("charector/enemy/left1.png")
+Img_Eneme_left2 = pygame.image.load("charector/enemy/left2.png")
+Img_Eneme_right1 = pygame.image.load("charector/enemy/right1.png")
+Img_Eneme_right2 = pygame.image.load("charector/enemy/right2.png")
 
 ##
 ## Setup zone
@@ -92,11 +92,38 @@ def draw_scence(scence):
     screen.blit(Img_Height_ground_07, (scence_item_size*6, 700))
     screen.blit(Img_Height_ground_08, (scence_item_size*7, 700))
 
+def enemy(player_pos, bullet, enemy_box, wave, this_wave):
+    """ Control enemy """
+    Img_Eneme = Img_Eneme_down1
+    enemy_mult = wave * 20
+    enemy_speed = 4
+    if this_wave != wave:
+        for i in range(1,enemy_mult+1):
+            enemy_box.append([random.randint(50, display_width-50), random.randint(0, 10), "down"])
+        this_wave = wave
+    for i in enemy_box:
+        if abs(i[0] - player_pos[0]) > abs(i[1] - player_pos[1]):
+            if i[0] > player_pos[0]:
+                i[0] -= enemy_speed
+            else:
+                i[0] += enemy_speed
+        else:
+            if i[1] > player_pos[1]:
+                i[1] -= enemy_speed
+            else:
+                i[1] += enemy_speed
+    for i in enemy_box:
+        if i[2] == "down":
+            Img_Eneme = Img_Eneme_down1
+        screen.blit(Img_Eneme,  i[:2])
+    return enemy_box, this_wave
+
 
 def event_control():
     player_pos = [int(display_width * 0.5), int(display_height * 0.5)]
     bullet_pos = [0, 0]
     bullet = list() #bullet dict [[x,y,direction],[x,y,direction],[x,y,direction],....]
+    enemy_box = list() # Box for keep all enemy position
     Img_Player = Img_Player_right_idle
     Idle_Player = Img_Player_down_idle
     player_speed = 5
@@ -106,6 +133,8 @@ def event_control():
     direction = 'right'
     bul_dicrec = 'up'
     bang = True
+    wave = 1
+    this_wave = 0
 
     while True:
         draw_scence(current_scence)
@@ -135,10 +164,10 @@ def event_control():
                     Img_Player = Img_Player_right2
                     Idle_Player = Img_Player_right_idle
                     direction = 'right'
-                if event.key == K_SPACE:
-                    bullet_pos = deepcopy(player_pos)
+                if event.key == K_SPACE: #create bullet 
+                    bullet_pos = deepcopy(player_pos) # copy player_pos to new editable list
                     bullet.append([bullet_pos[0], bullet_pos[1],direction])
-                    bang = True
+                    #bang = True
             if event.type == KEYUP:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                     x_acc = 0
@@ -167,7 +196,7 @@ def event_control():
 ##
         player_pos[0] += x_acc
         player_pos[1] += y_acc
-        
+        enemy_box, this_wave = enemy(player_pos, bullet, enemy_box, wave, this_wave)
         screen.blit(Img_Player,  player_pos) # cook player 
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
