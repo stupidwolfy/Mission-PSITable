@@ -71,6 +71,12 @@ def draw_title():
     pygame.display.flip()
 
 ##draw_title()
+    
+def is_collisions(x1, y1, w1, h1, x2, y2, w2, h2):
+    """ Check for collision"""
+    if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2) or (x2+w2>=x1+w1>=x2 and y2+h2>=y1>=y2) or (x2+w2>=x1>=x2 and y2+h2>=y1+h1>=y2) or (x2+w2>=x1+w1>=x2 and y2+h2>=y1+h1>=y2) :
+        return True
+    return False
 
 def draw_scence(scence):
     if scence == "jungle_1":
@@ -95,26 +101,55 @@ def draw_scence(scence):
 def enemy(player_pos, bullet, enemy_box, wave, this_wave):
     """ Control enemy """
     Img_Eneme = Img_Eneme_down1
-    enemy_mult = wave * 20
-    enemy_speed = 4
+    enemy_mult = wave * 2
+    enemy_speed = 2
+    add_x = 0
+    add_y = 0
     if this_wave != wave:
         for i in range(1,enemy_mult+1):
             enemy_box.append([random.randint(50, display_width-50), random.randint(0, 10), "down"])
+            enemy_box.append([random.randint(50, display_width-50), random.randint(890, 900), "up"])
+            enemy_box.append([random.randint(0, 10), random.randint(50, display_height-50), "right"])
+            enemy_box.append([random.randint(display_width, display_width), random.randint(50, display_height-50), "left"])
         this_wave = wave
-    for i in enemy_box:
-        if abs(i[0] - player_pos[0]) > abs(i[1] - player_pos[1]):
-            if i[0] > player_pos[0]:
-                i[0] -= enemy_speed
+    for i in range(len(enemy_box)):
+        if abs( enemy_box[i][0] - player_pos[0]) - abs( enemy_box[i][1] - player_pos[1]) > 2:
+            if enemy_box[i][0] > player_pos[0]:
+                add_x = -enemy_speed
+                enemy_box[i][2] = "left"
             else:
-                i[0] += enemy_speed
+                add_x = enemy_speed
+                enemy_box[i][2] = "right"
         else:
-            if i[1] > player_pos[1]:
-                i[1] -= enemy_speed
+            if enemy_box[i][1] > player_pos[1]:
+                 add_y = -enemy_speed
+                 enemy_box[i][2] = "up"
             else:
-                i[1] += enemy_speed
+                add_y = enemy_speed
+                enemy_box[i][2] = "down"
+        if enemy_box[i] != enemy_box[len(enemy_box)-1]:
+            if is_collisions(enemy_box[i][0], enemy_box[i][1], 16, 16, enemy_box[i+1][0], enemy_box[i+1][1], 16, 16):
+                add_x = -add_x
+                add_y = -add_y
+        else:
+            if is_collisions(enemy_box[i][0], enemy_box[i][1], 16, 16, enemy_box[0][0], enemy_box[0][1], 16, 16):
+                add_x = -add_x
+                add_y = -add_y
+        enemy_box[i][0] += add_x
+        enemy_box[i][1] += add_y 
+
     for i in enemy_box:
+        if i[2] == "up":
+            Img_Eneme = Img_Eneme_up1
+        screen.blit(Img_Eneme,  i[:2])
         if i[2] == "down":
             Img_Eneme = Img_Eneme_down1
+        screen.blit(Img_Eneme,  i[:2])
+        if i[2] == "left":
+            Img_Eneme = Img_Eneme_left1
+        screen.blit(Img_Eneme,  i[:2])
+        if i[2] == "right":
+            Img_Eneme = Img_Eneme_right1
         screen.blit(Img_Eneme,  i[:2])
     return enemy_box, this_wave
 
@@ -141,7 +176,7 @@ def event_control():
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    print(len(bullet))
+                    print(enemy_box)
                     pygame.quit()
                     quit()
                 if event.key == K_UP:
@@ -179,6 +214,7 @@ def event_control():
         for i in range(len(bullet)-1 , -1, -1):
                 if bullet[i][0] < 0 or bullet[i][0] > display_width or bullet[i][1] < 0 or bullet[i][1] > display_height:
                     del bullet[i]
+
     ## bullet handle
         for i in bullet:
             if i[2] == 'up':
@@ -197,7 +233,18 @@ def event_control():
         player_pos[0] += x_acc
         player_pos[1] += y_acc
         enemy_box, this_wave = enemy(player_pos, bullet, enemy_box, wave, this_wave)
-        screen.blit(Img_Player,  player_pos) # cook player 
+        screen.blit(Img_Player,  player_pos) # cook player
+    ## Collide of bullet and enemy handle
+        for i in range(len(bullet)-1 , -1, -1):
+            for a in range(len(enemy_box)-1 , -1, -1):
+                if is_collisions(bullet[i][0], bullet[i][1], 10, 10, enemy_box[a][0], enemy_box[a][1], 32, 32):
+                    del enemy_box[a]
+                    del bullet[i]
+                    break
+    ## Wave control
+        if len(enemy_box) == 0:
+            wave += 1
+            print(enemy_box)
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
 
