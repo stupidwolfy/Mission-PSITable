@@ -101,8 +101,8 @@ def draw_scence(scence):
 def enemy(player_pos, bullet, enemy_box, wave, this_wave):
     """ Control enemy """
     Img_Eneme = Img_Eneme_down1
-    enemy_mult = wave * 2
-    enemy_speed = 2
+    enemy_mult = wave 
+    enemy_speed = 4
     add_x = 0
     add_y = 0
     if this_wave != wave:
@@ -113,15 +113,15 @@ def enemy(player_pos, bullet, enemy_box, wave, this_wave):
             enemy_box.append([random.randint(display_width, display_width), random.randint(50, display_height-50), "left"])
         this_wave = wave
     for i in range(len(enemy_box)):
-        if abs( enemy_box[i][0] - player_pos[0]) - abs( enemy_box[i][1] - player_pos[1]) > 2:
-            if enemy_box[i][0] > player_pos[0]:
+        if abs( enemy_box[i][0] - player_pos[0]) - abs( enemy_box[i][1] - player_pos[1]) > 1:
+            if enemy_box[i][0] - player_pos[0]  > 2:
                 add_x = -enemy_speed
                 enemy_box[i][2] = "left"
             else:
                 add_x = enemy_speed
                 enemy_box[i][2] = "right"
         else:
-            if enemy_box[i][1] > player_pos[1]:
+            if enemy_box[i][1] - player_pos[1] > 10:
                  add_y = -enemy_speed
                  enemy_box[i][2] = "up"
             else:
@@ -170,6 +170,7 @@ def event_control():
     bang = True
     wave = 1
     this_wave = 0
+    score = 0
 
     while True:
         draw_scence(current_scence)
@@ -214,7 +215,10 @@ def event_control():
         for i in range(len(bullet)-1 , -1, -1):
                 if bullet[i][0] < 0 or bullet[i][0] > display_width or bullet[i][1] < 0 or bullet[i][1] > display_height:
                     del bullet[i]
-
+    ## remove enemy when it offscreen
+        for i in range(len(enemy_box)-1 , -1, -1):
+                if enemy_box[i][0] < 0 or enemy_box[i][0] > display_width or enemy_box[i][1] < 0 or enemy_box[i][1] > display_height:
+                    del enemy_box[i]
     ## bullet handle
         for i in bullet:
             if i[2] == 'up':
@@ -240,6 +244,7 @@ def event_control():
                 if is_collisions(bullet[i][0], bullet[i][1], 10, 10, enemy_box[a][0], enemy_box[a][1], 32, 32):
                     del enemy_box[a]
                     del bullet[i]
+                    score += 1
                     break
     ## Wave control
         if len(enemy_box) == 0:
