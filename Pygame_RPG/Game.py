@@ -60,10 +60,13 @@ display_height = 900
 current_scence = "jungle_1"
 scence_item_size = 32
 clock = pygame.time.Clock()
+pygame.font.init()
 ##
 ## Processing zone
 
 screen = pygame.display.set_mode((display_width, display_height), pygame.FULLSCREEN)
+pygame.display.set_caption("Pygame_RPG!")
+pygame.display.set_icon(Img_Player_down_idle)
 
 def draw_title():
     screen.fill(Color("Grey"))
@@ -153,8 +156,15 @@ def enemy(player_pos, bullet, enemy_box, wave, this_wave):
         screen.blit(Img_Eneme,  i[:2])
     return enemy_box, this_wave
 
+def hud(score, wave, life):
+    """ Control other content that not in game sprite """
+    myfont = pygame.font.SysFont('Comic Sans MS', 30)
+    bar_1 = 'Score: %d' %score +"   "+ 'Wave: %d' %wave +"   "+ 'Life: %d' %life
+    hud_1 = myfont.render(bar_1, False, (0, 0, 0))
+    screen.blit(hud_1,(10,10))
 
-def event_control():
+def event_control(score,wave, life):
+    """ Almost cvery action happend here """
     player_pos = [int(display_width * 0.5), int(display_height * 0.5)]
     bullet_pos = [0, 0]
     bullet = list() #bullet dict [[x,y,direction],[x,y,direction],[x,y,direction],....]
@@ -168,16 +178,14 @@ def event_control():
     direction = 'right'
     bul_dicrec = 'up'
     bang = True
-    wave = 1
     this_wave = 0
-    score = 0
 
     while True:
         draw_scence(current_scence)
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    print(enemy_box)
+                    let_exit(score, wave)
                     pygame.quit()
                     quit()
                 if event.key == K_UP:
@@ -217,6 +225,8 @@ def event_control():
                     del bullet[i]
     ## remove enemy when it offscreen
         for i in range(len(enemy_box)-1 , -1, -1):
+                if is_collisions(enemy_box[i][0], enemy_box[i][1], 32, 32, player_pos[0], player_pos[1], 32, 32):
+                    return score, wave
                 if enemy_box[i][0] < 0 or enemy_box[i][0] > display_width or enemy_box[i][1] < 0 or enemy_box[i][1] > display_height:
                     del enemy_box[i]
     ## bullet handle
@@ -233,7 +243,7 @@ def event_control():
             elif i[2] == 'right' :
                 i[0] += bul_speed
                 pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
-##
+    ##
         player_pos[0] += x_acc
         player_pos[1] += y_acc
         enemy_box, this_wave = enemy(player_pos, bullet, enemy_box, wave, this_wave)
@@ -249,15 +259,33 @@ def event_control():
     ## Wave control
         if len(enemy_box) == 0:
             wave += 1
-            print(enemy_box)
+    ##
+        hud(score, wave, life)
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
 
-        
-## 
+##
+
+def let_exit(score, wave):
+    """ Acthion before exit game """
+    print("Score: ",score)
+    print("Wave: ",wave)
+    print("!!Thank for playing!!")
+    pygame.quit()
+    quit()
+
 def game_loop():
+    life = 3
+    score = 0
+    wave = 1
     draw_scence(current_scence)
-    event_control()
+    while life > 0:
+        t0 = time.time()
+        while time.time() - t0 < 1:
+            pass
+        score, wave = event_control(score, wave, life)
+        life -= 1
+    let_exit(score, wave)
     pygame.quit()
     quit()
 
