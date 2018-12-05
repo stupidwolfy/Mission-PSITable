@@ -4,8 +4,11 @@
 ##import hud
 import pygame,random,math,time
 from pygame.locals import *
+from firebase import firebase
 from copy import deepcopy ## for copy list and keep original val
-
+## Firebase handle
+url = 'https://pygame-rpg01-223910.firebaseio.com/'
+messenger = firebase.FirebaseApplication(url)
 ## Import sprite zone
 Img_Tree_A_1 = pygame.image.load("world/Tree/A_1.png")
 Img_Tree_A_2 = pygame.image.load("world/Tree/A_2.png")
@@ -55,6 +58,7 @@ Img_Eneme_right2 = pygame.image.load("charector/enemy/right2.png")
 
 ##
 ## Setup zone
+name = input('Enter name: ')
 display_width = 1600
 display_height = 900
 current_scence = "jungle_1"
@@ -163,7 +167,7 @@ def hud(score, wave, life):
     hud_1 = myfont.render(bar_1, False, (0, 0, 0))
     screen.blit(hud_1,(10,10))
 
-def event_control(score,wave, life):
+def event_control(score,wave, life, name):
     """ Almost cvery action happend here """
     player_pos = [int(display_width * 0.5), int(display_height * 0.5)]
     bullet_pos = [0, 0]
@@ -179,13 +183,15 @@ def event_control(score,wave, life):
     bul_dicrec = 'up'
     bang = True
     this_wave = 0
+    t3 = time.time()
 
     while True:
         draw_scence(current_scence)
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    let_exit(score, wave)
+                    end_time = time.time() - t3
+                    let_exit(score, wave, end_time, name)
                     pygame.quit()
                     quit()
                 if event.key == K_UP:
@@ -266,28 +272,36 @@ def event_control(score,wave, life):
 
 ##
 
-def let_exit(score, wave):
+def let_exit(score, wave, end_time, name):
     """ Acthion before exit game """
+    pygame.quit()
+    print("Uploading score....")
+    messenger.put('/Score', name, score)
+    messenger.put('/Wave', name, wave)
+    messenger.put('/Time', name, int(end_time))
+    print("Completed!")
     print("Score: ",score)
     print("Wave: ",wave)
+    print("Time: ", int(end_time), 'seconds')
     print("!!Thank for playing!!")
-    pygame.quit()
     quit()
 
-def game_loop():
+def game_loop(name):
     life = 3
     score = 0
     wave = 1
     draw_scence(current_scence)
+    t0 = time.time()
     while life > 0:
         t0 = time.time()
         while time.time() - t0 < 1:
             pass
-        score, wave = event_control(score, wave, life)
+        score, wave = event_control(score, wave, life, name)
         life -= 1
-    let_exit(score, wave)
+    end_time = time.time() - t0
+    let_exit(score, wave, end_time, name)
     pygame.quit()
     quit()
 
-game_loop()
+game_loop(name)
 
