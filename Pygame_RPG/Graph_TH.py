@@ -66,7 +66,19 @@ fig.append_trace(Timess, 3, 1)
 fig.append_trace(Score, 4, 1)
 fig.append_trace(Wave, 4, 1)
 
-fig['layout'].update(height=1600, width=800, showlegend=False, title='กระดานคะแนน Python RPG')
+temp = 1
+for i in fig['layout']['annotations']:
+    if temp == 1:
+        i['font'] = dict(family='Courier New, monospace', size=35,color='#0000aa')
+    elif temp == 2:
+        i['font'] = dict(family='Courier New, monospace', size=35,color='#aa0000')
+    elif temp == 3:
+        i['font'] = dict(family='Courier New, monospace', size=35,color='#00aa00')
+    elif temp == 4:
+        i['font'] = dict(family='Courier New, monospace', size=35,color='#000000')
+    temp += 1
+
+fig['layout'].update(height=3600, showlegend=False, title='กระดานคะแนน Python RPG', font=dict(family='Courier New, monospace', size=25, color='#000000'))
 plotly.offline.plot(fig, filename='Graphv3.html')
 
 print("เรียบร้อย!")
