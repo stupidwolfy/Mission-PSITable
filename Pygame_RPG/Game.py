@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Main process of game. """
 
 import pygame,random,math,time,sys,os
@@ -138,8 +139,6 @@ def title_handle():
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
     return name
-
-            
         
     
 def is_collisions(x1, y1, w1, h1, x2, y2, w2, h2):
@@ -207,10 +206,12 @@ def enemy(player_pos, bullet, enemy_box, wave, this_wave):
         screen.blit(Img_Eneme,  i[:2])
     return enemy_box, this_wave
 
-def hud(score, wave, life):
+def hud(score, wave, life, bullet):
     """ Control other content that not in game sprite """
+    bul = "<= " * (8 - bullet)
     myfont = pygame.font.SysFont('Comic Sans MS', 30)
-    bar_1 = 'Score: %d' %score +"   "+ 'Wave: %d' %wave +"   "+ 'Life: %d' %life
+    bar_1 = 'Score: %d' %score +"   "+ 'Wave: %d' %wave +\
+                 "   "+ 'Life: %d' %life + "   " + 'Bullet: ' + bul
     hud_1 = myfont.render(bar_1, False, (0, 0, 0))
     screen.blit(hud_1,(10,10))
 
@@ -224,6 +225,7 @@ def event_control(score,wave, life, name):
     Idle_Player = Img_Player_down_idle
     player_speed = 5
     bul_speed = 10
+    bul_max = 8
     x_acc = 0
     y_acc = 0
     direction = 'right'
@@ -260,7 +262,7 @@ def event_control(score,wave, life, name):
                     Img_Player = Img_Player_right2
                     Idle_Player = Img_Player_right_idle
                     direction = 'right'
-                if event.key == pygame.K_SPACE: #create bullet
+                if event.key == pygame.K_SPACE and len(bullet) < bul_max: #create bullet
                     sound_shoot.play()
                     bullet_pos = deepcopy(player_pos) # copy player_pos to new editable list
                     bullet.append([bullet_pos[0], bullet_pos[1],direction])
@@ -297,6 +299,11 @@ def event_control(score,wave, life, name):
                 i[0] += bul_speed
                 pygame.draw.circle(screen, (255, 50, 50), i[:2], 5,)
     ##
+    ## Player offscreen fix
+        if player_pos[0] < 5: player_pos[0] += 7
+        if player_pos[0] > display_width-30: player_pos[0] -= 7
+        if player_pos[1] < 5: player_pos[1] += 7
+        if player_pos[1] > display_height-30: player_pos[1] -= 7
         player_pos[0] += x_acc
         player_pos[1] += y_acc
         enemy_box, this_wave = enemy(player_pos, bullet, enemy_box, wave, this_wave)
@@ -315,7 +322,7 @@ def event_control(score,wave, life, name):
             sound_pass.play()
             wave += 1
     ##
-        hud(score, wave, life)
+        hud(score, wave, life, len(bullet))
         pygame.display.update() # display cooked item
         clock.tick(30) # frame rate limit
 
@@ -359,8 +366,9 @@ def let_exit(score, wave, end_time, name):
             continue
         break
     pygame.quit()
-    input("Press enter to exit!!")
+    exit()
     os._exit(0)
+    
 
 def game_loop():
     name = title_handle()
