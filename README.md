@@ -4,7 +4,7 @@
 
 - Feel free to read, run, fun with code!!
 
-- Please run all script on python 3.6 on lower!!
+- Please run all script on python 3.6 or lower!!
 
 - Please install all requried module. (in pip_req.txt)
 
