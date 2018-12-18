@@ -12,7 +12,7 @@
 
 ## Info: 
 
-       This repo is about using python to make game and processiong with data from player like time played, score and using cloud  database to manage player data.
+       This repo is about using python to make game and processiong with data from player like time played, score and using cloud database to manage player data.
 
 ## Status: 
 
