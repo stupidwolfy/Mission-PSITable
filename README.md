@@ -18,8 +18,10 @@
 ## Status :traffic_light:
 Content | Status
 -------------- | --------------
-Resource prepare | **Completed**
-Game coding | **Completed**
-Graph coding | **Completed**    
-Database control | **Completed**      
-Overall | **Completed**
+Resource prepare | **Completed** ![#f03c15](https://placehold.it/25x15/00ff00/000000?text=+)
+Game coding | **Completed** ![#f03c15](https://placehold.it/25x15/00ff00/000000?text=+)
+Graph coding | **Completed** ![#f03c15](https://placehold.it/25x15/00ff00/000000?text=+)
+Database control | **Completed** ![#f03c15](https://placehold.it/25x15/00ff00/000000?text=+)      
+Overall | **Completed** ![#f03c15](https://placehold.it/25x15/00ff00/000000?text=+)
+
+
