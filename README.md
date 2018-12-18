@@ -14,8 +14,12 @@ Info:
 
 Status: 
 
+        Resource prepare => Completed!!
+
         Game coding => Completed!!
 
         Graph coding => Completed!!
         
         Database control => Completed!!
+        
+        Overall => Finished
