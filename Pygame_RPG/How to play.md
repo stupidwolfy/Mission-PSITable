@@ -1,6 +1,6 @@
 ## Play :video_game:
          Run Game.py
-## View score:chart_with_upwards_trend:
+## View score :chart_with_upwards_trend:
          Run Graph.py
 ## Rule :dart:
          Catch rabbit as much as you can.
