@@ -1,5 +1,7 @@
 ## Play : 
          Run Game.py
+## View score: 
+         Run Graph.py
 ## Rule : 
          Catch rabbit as much as you can.
 ## Control: 
@@ -11,6 +13,4 @@
          Esc           >>  Exit game
          Enter         >>  Confirm
 
-## View score: 
-         Run Graph.py
          
