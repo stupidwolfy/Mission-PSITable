@@ -8,7 +8,7 @@
 
 - Please install all requried module. (in pip_req.txt)
 
-- Watch tutorial [here!](https://youtu.be/yMKMW3PX5CY) (Thai version only)
+- Watch guide [here!](https://youtu.be/yMKMW3PX5CY) (Thai version only)
 
 ## Info: 
 
