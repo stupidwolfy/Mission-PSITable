@@ -1,10 +1,10 @@
-## Play : :video_game:
+## Play :video_game:
          Run Game.py
-## View score: :chart_with_upwards_trend:
+## View score:chart_with_upwards_trend:
          Run Graph.py
-## Rule : :dart:
+## Rule :dart:
          Catch rabbit as much as you can.
-## Control: :round_pushpin:
+## Control :round_pushpin:
          Arrow UP      >>  Move up
          Arrow Down    >>  Move down
          Arrow Left    >>  Move left
