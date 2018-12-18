@@ -12,5 +12,7 @@ Info: This repo is about using python to make game and processiong with data fro
       and using cloud database to manage player data.
 
 Status: Game coding => Completed!!
+
         Graph coding => Completed!!
+        
         Database control => Completed!!
