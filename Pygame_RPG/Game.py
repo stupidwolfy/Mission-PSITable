@@ -379,8 +379,8 @@ def game_loop():
     draw_scence(current_scence)
     t0 = time.time()
     while life > 0: ##Keep game contionue when still have heart 
-        t0 = time.time()
-        while time.time() - t0 < 1:
+        t1 = time.time()
+        while time.time() - t1 < 1:
             pass
         score, wave = event_control(score, wave, life, name)
         sound_hit.play()
